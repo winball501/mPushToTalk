@@ -1,0 +1,75 @@
+﻿<Window x:Class="Multron_Push_To_Talk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Multron_Push_To_Talk"
+        mc:Ignorable="d"
+        Title="Multron Push to Talk v1.0 beta"
+        Height="450" Width="800" 
+        Background="#1C1C1C"
+        BorderBrush="#333333"
+        BorderThickness="1"
+    
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="PushToTalkButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF3B83F6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="200"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="20"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Content">
+                <Setter.Value>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Path Name="MicrophoneIcon" Data="M 10 0 L 10 20 L 20 10 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" Width="50" Height="50"/>
+                    </StackPanel>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1C1C1C" Offset="0"/>
+                <GradientStop Color="#2E2E2E" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+ 
+        <TextBlock Name="PushToTalkText" 
+                   Text="Press and Hold to Talk" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   FontWeight="Bold" 
+                   Foreground="White" 
+                   FontSize="24"
+                   Margin="0,81,0,0"/>
+
+     
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20">
+            <TextBlock Text="Select Key for Push to Talk:" Foreground="White" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ComboBox Name="KeyComboBox" Width="250" Height="30" SelectionChanged="KeyComboBox_SelectionChanged" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <ComboBoxItem Content="Spacebar"/>
+                <ComboBoxItem Content="Ctrl"/>
+                <ComboBoxItem Content="H"/>
+                <ComboBoxItem Content="F"/>
+                <ComboBoxItem Content="V"/>
+                <ComboBoxItem Content="E"/>
+                <ComboBoxItem Content="Q"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20, 180, 0, 0">
+            <TextBlock Text="Select Microphone:" Foreground="White" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ComboBox Name="MicrophoneComboBox" Width="623" Height="30" SelectionChanged="MicrophoneComboBox_SelectionChanged" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <CheckBox Name="EnableTrayIconCheckBox" Content="Enable TrayIcon" HorizontalAlignment="Left" Margin="98,290,0,0" VerticalAlignment="Top" Foreground="White" Checked="EnableTrayIconCheckBox_Checked" Unchecked="EnableTrayIconCheckBox_Unchecked"/>
+    </Grid>
+</Window>
