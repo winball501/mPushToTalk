@@ -1,0 +1,179 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\winba\\AppData\\Local\\SourceServer\\bac73f3763e3992865e5c1735c9387670e5710dbc85155ce38cbe1f5f3112e18\\src\\coreclr\\System.Private.CoreLib\\src\\System\\RuntimeType.CoreCLR.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\mousehook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:mousehook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\keyboardhook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:keyboardhook.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\app.manifest||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:app.manifest||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\winba\\AppData\\Local\\Temp\\.vsdbgsrc\\329f3a7d0a8dec130abd973fcc4db1eb0b691ae509e93ba5ad536ac3ad443521\\Dispatcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|c:\\users\\frknk\\onedrive\\masa\u00FCst\u00FC\\mpushtotalk-mptt_1.2b\\mpushtotalk-mptt_1.2b\\multron-push-to-talk\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{B8FF18AA-E4C4-4AE4-9E27-D9A89E192842}|Multron-Push-To-Talk.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAADsBAAAAAAAAAAAhwH4BAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-05T16:28:39.881Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "app.manifest",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\app.manifest",
+              "RelativeDocumentMoniker": "app.manifest",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\app.manifest",
+              "RelativeToolTip": "app.manifest",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001203|",
+              "WhenOpened": "2025-01-05T19:01:49.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\App.xaml.cs",
+              "RelativeDocumentMoniker": "App.xaml.cs",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\App.xaml.cs",
+              "RelativeToolTip": "App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-05T18:07:57.82Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-05T16:28:41.957Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RuntimeType.CoreCLR.cs",
+              "DocumentMoniker": "C:\\Users\\winba\\AppData\\Local\\SourceServer\\bac73f3763e3992865e5c1735c9387670e5710dbc85155ce38cbe1f5f3112e18\\src\\coreclr\\System.Private.CoreLib\\src\\System\\RuntimeType.CoreCLR.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\winba\\AppData\\Local\\SourceServer\\bac73f3763e3992865e5c1735c9387670e5710dbc85155ce38cbe1f5f3112e18\\src\\coreclr\\System.Private.CoreLib\\src\\System\\RuntimeType.CoreCLR.cs",
+              "ToolTip": "C:\\Users\\winba\\AppData\\Local\\SourceServer\\bac73f3763e3992865e5c1735c9387670e5710dbc85155ce38cbe1f5f3112e18\\src\\coreclr\\System.Private.CoreLib\\src\\System\\RuntimeType.CoreCLR.cs [Read Only]",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\winba\\AppData\\Local\\SourceServer\\bac73f3763e3992865e5c1735c9387670e5710dbc85155ce38cbe1f5f3112e18\\src\\coreclr\\System.Private.CoreLib\\src\\System\\RuntimeType.CoreCLR.cs [Read Only]",
+              "ViewState": "AgIAAOIOAAAAAAAAAAAWwPUOAAAUAAAAAQAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-30T13:06:21.317Z",
+              "EditorCaption": " [Read Only]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MouseHook.cs",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MouseHook.cs",
+              "RelativeDocumentMoniker": "MouseHook.cs",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\MouseHook.cs",
+              "RelativeToolTip": "MouseHook.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-06T14:44:30.117Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Dispatcher.cs",
+              "DocumentMoniker": "C:\\Users\\winba\\AppData\\Local\\Temp\\.vsdbgsrc\\329f3a7d0a8dec130abd973fcc4db1eb0b691ae509e93ba5ad536ac3ad443521\\Dispatcher.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\winba\\AppData\\Local\\Temp\\.vsdbgsrc\\329f3a7d0a8dec130abd973fcc4db1eb0b691ae509e93ba5ad536ac3ad443521\\Dispatcher.cs",
+              "ToolTip": "C:\\Users\\winba\\AppData\\Local\\Temp\\.vsdbgsrc\\329f3a7d0a8dec130abd973fcc4db1eb0b691ae509e93ba5ad536ac3ad443521\\Dispatcher.cs [Read Only]",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\winba\\AppData\\Local\\Temp\\.vsdbgsrc\\329f3a7d0a8dec130abd973fcc4db1eb0b691ae509e93ba5ad536ac3ad443521\\Dispatcher.cs [Read Only]",
+              "ViewState": "AgIAAAwFAAAAAAAAAIAwwBYFAAAjAAAAAQAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-27T19:18:30.678Z",
+              "EditorCaption": " [Read Only]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\App.xaml",
+              "RelativeDocumentMoniker": "App.xaml",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\App.xaml",
+              "RelativeToolTip": "App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-05T18:05:58.329Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\AssemblyInfo.cs",
+              "RelativeToolTip": "AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-05T18:05:56.625Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "KeyboardHook.cs",
+              "DocumentMoniker": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\KeyboardHook.cs",
+              "RelativeDocumentMoniker": "KeyboardHook.cs",
+              "ToolTip": "C:\\Users\\frknk\\OneDrive\\Masa\u00FCst\u00FC\\mPushToTalk-mptt_1.2b\\mPushToTalk-mptt_1.2b\\Multron-Push-To-Talk\\KeyboardHook.cs",
+              "RelativeToolTip": "KeyboardHook.cs",
+              "ViewState": "AgIAAAsBAAAAAAAAAAAIwB8BAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-05T19:04:25.184Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
