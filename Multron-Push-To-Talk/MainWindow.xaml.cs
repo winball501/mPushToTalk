@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -301,16 +301,35 @@ namespace Multron_Push_To_Talk
         }
         private void keyboardHook_KeyUp(KeyboardHook.VKeys key)
         {
-            if (isTalking)
+            Thread t = new Thread(() =>
+            {
+                if (isTalking)
                 {
-                    isTalking = false;
+                    int sleeptime = 0;
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        sleeptime = int.Parse(MsSettingTextBox.Text);
+                    });
+                    Thread.Sleep(sleeptime);
+                    this.Dispatcher.Invoke(new Action(() =>
+                    {
+                     
+                        isTalking = false;
 
-                   
-                    PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
-                    defaultmicdevice.AudioEndpointVolume.Mute = true;
-                   
 
-            }
+                        PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }));
+               
+                  
+
+
+                }
+               
+            });
+
+            t.Start();
+         
             
         }
 
@@ -343,7 +362,7 @@ namespace Multron_Push_To_Talk
               
                 
             }
-        }
+        }   
         MouseHook mouseHook = new MouseHook();
         int mouseload = 0;
         int listening = 0;
@@ -383,25 +402,42 @@ namespace Multron_Push_To_Talk
         }
         private void MouseHook_MouseButton4Up(MSLLHOOKSTRUCT mouseStruct)
         {
-
-            if (listening == 0)
+            Thread t = new Thread(() =>
             {
-                 
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+                int sleeptime = 0;
+                this.Dispatcher.Invoke(() =>
+                {
+                    sleeptime = int.Parse(MsSettingTextBox.Text);
+                });
+                Thread.Sleep( sleeptime);
+                this.Dispatcher.Invoke(new Action(() =>
+                {
+                    
+                    if (listening == 0)
+                    {
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-              
-            }
+                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+
+                    }
+
+                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1)
+                    {
+                        isTalking = false;
+
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }
+                    clickedmouses.Remove("MOUSE BUTTON4");
+                }));
           
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1)
-            {
-                isTalking = false;
+              
+            });
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-            }
-            clickedmouses.Remove("MOUSE BUTTON4");
+            t.Start();
+       
         }
         private void MouseHook_MouseButton3Down(MSLLHOOKSTRUCT mouseStruct)
         {
@@ -437,24 +473,40 @@ namespace Multron_Push_To_Talk
         }
         private void MouseHook_MouseButton3Up(MSLLHOOKSTRUCT mouseStruct)
         {
-
-            if (listening == 0)
+            Thread t = new Thread(() =>
             {
-                selectedmousehook = 4;
-                
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";    
+                int sleeptime = 0;
+                this.Dispatcher.Invoke(() =>
+                {
+                    sleeptime = int.Parse(MsSettingTextBox.Text);
+                });
+                Thread.Sleep(sleeptime);
+                this.Dispatcher.Invoke(new Action(() =>
+                {
+                  
+                    if (listening == 0)
+                    {
+                        selectedmousehook = 4;
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-            }
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
-            {
-                isTalking = false;
+                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-            }
-            clickedmouses.Remove("MOUSE BUTTON3");
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }
+                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+                    {
+                        isTalking = false;
+
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }
+                    clickedmouses.Remove("MOUSE BUTTON3");
+                }));
+              
+            });
+
+            t.Start();
+          
         }
         private void MouseHook_RightButtonDown(MSLLHOOKSTRUCT mouseStruct)
         {
@@ -489,23 +541,39 @@ namespace Multron_Push_To_Talk
 
         private void MouseHook_RightButtonUp(MSLLHOOKSTRUCT mouseStruct)
         {
-       
-            if(listening == 0)
+            Thread t = new Thread(() =>
             {
-             
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-            }
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
-            {
-                isTalking = false;
+                int sleeptime = 0;
+                this.Dispatcher.Invoke(() =>
+                {
+                    sleeptime = int.Parse(MsSettingTextBox.Text);
+                });
+                Thread.Sleep(sleeptime);
+                this.Dispatcher.Invoke(new Action(() =>
+                {
+                   
+                    if (listening == 0)
+                    {
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + "  to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-               
-            }
-            clickedmouses.Remove("MOUSE RIGHT BUTTON");
+                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }
+                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+                    {
+                        isTalking = false;
+
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + "  to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+
+                    }
+                    clickedmouses.Remove("MOUSE RIGHT BUTTON");
+                }));
+             
+            });
+
+            t.Start();
+       
         }
 
         private void MouseHook_MiddleButtonDown(MSLLHOOKSTRUCT mouseStruct)
@@ -542,24 +610,36 @@ namespace Multron_Push_To_Talk
 
         private void MouseHook_MiddleButtonUp(MSLLHOOKSTRUCT mouseStruct)
         {
-            if(listening == 0)
+            Thread t = new Thread(() =>
             {
-                selectedmousehook = 3;
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                isTalking = false;
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-            }
-         
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
-            {
-                isTalking = false;
+                Thread.Sleep(int.Parse(MsSettingTextBox.Text));
+                this.Dispatcher.Invoke(new Action(() =>
+                {
+                   
+                    if (listening == 0)
+                    {
+                        selectedmousehook = 3;
+                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        isTalking = false;
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }
 
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring +" to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+                    {
+                        isTalking = false;
+
+                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+
+                    }
+                    clickedmouses.Remove("MOUSE MIDDLE BUTTON");
+                }));
              
-            }
-            clickedmouses.Remove("MOUSE MIDDLE BUTTON");
+            });
+
+            t.Start();
+       
         }
        
 
