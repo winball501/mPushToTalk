@@ -23,7 +23,9 @@ namespace Multron_Push_To_Talk
         private bool isTalking = false;
         private HashSet<KeyboardHook.VKeys> selectedkeys = new HashSet<KeyboardHook.VKeys>();
         private HashSet<KeyboardHook.VKeys> pressedkeys = new HashSet<KeyboardHook.VKeys>();
-        
+        private int listening = 0;
+        private int mouseload = 0;
+        MouseHook mouseHook = new MouseHook();
         private HashSet<string> pressedmouses = new HashSet<string>();
         private HashSet<string> clickedmouses = new HashSet<string>();
         private string selectedkeystring = "";
@@ -121,7 +123,7 @@ namespace Multron_Push_To_Talk
         
             File.WriteAllLines(settingspath, updatedLines);
         }
-        private static Mutex fileMutex = new Mutex();
+    
         public void savesettings(string set)
         {
             
@@ -153,80 +155,102 @@ namespace Multron_Push_To_Talk
  
 
         }
+    
+        private readonly object keysLock = new object();
+        private readonly object mouseLock = new object();
+        private readonly object talkingLock = new object();
+
         public void refresh()
         {
             Thread _refreshThread = new Thread(() =>
             {
                 while (true)
                 {
-                
                     Thread.Sleep(100000);
 
-                     this.Dispatcher.Invoke(new Action(() =>
+                    try
+                    {
+                        this.Dispatcher.Invoke(new Action(() =>
                         {
-                        
                             keyboardHook.KeyDown -= new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyDown);
                             keyboardHook.KeyUp -= new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyUp);
                             keyboardHook.Uninstall();
 
-                            isTalking = false;
-                            PushToTalkText.Text = $"Press and Hold {selectedkeys} to Talk";
-                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
 
-                           
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+
                             keyboardHook.KeyDown += new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyDown);
                             keyboardHook.KeyUp += new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyUp);
                             keyboardHook.Install();
-                     }));
-                
-                  
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Refresh error: {ex.Message}");
+                    }
+
                     Thread.Sleep(100);
                 }
             });
 
+            _refreshThread.IsBackground = true;
             _refreshThread.Start();
         }
+
         public void LoadSelectedKeys()
         {
-           
             if (File.Exists(Environment.CurrentDirectory + "\\device.txt"))
             {
                 string selectedindex = File.ReadAllText(Environment.CurrentDirectory + "\\device.txt");
-                MicrophoneComboBox.SelectedIndex = int.Parse(selectedindex);
-            }
-            if(File.Exists(Environment.CurrentDirectory + "\\pressedmouses.txt"))
-            {
-                var lines = File.ReadAllLines(Environment.CurrentDirectory + "\\pressedmouses.txt");
-                foreach (var line in lines)
+                if (int.TryParse(selectedindex, out int index) && MicrophoneComboBox != null)
                 {
-
-                       
-                            pressedmouses.Add(line);
-                            selectedmousehook = 5;
-                            if (!selectedkeystring.Contains(" + " + line))
-                            {
-                                selectedkeystring += " + " + line;
-                            }
- 
-                    
+                    MicrophoneComboBox.SelectedIndex = index;
                 }
             }
-           
+
+            if (File.Exists(Environment.CurrentDirectory + "\\pressedmouses.txt"))
+            {
+                var lines = File.ReadAllLines(Environment.CurrentDirectory + "\\pressedmouses.txt");
+                lock (mouseLock)
+                {
+                    foreach (var line in lines)
+                    {
+                        pressedmouses.Add(line);
+                        selectedmousehook = 5;
+                        if (!selectedkeystring.Contains(" + " + line))
+                        {
+                            selectedkeystring += " + " + line;
+                        }
+                    }
+                }
+            }
+
             if (File.Exists(Environment.CurrentDirectory + "\\selectedkeys.txt"))
             {
                 var lines = File.ReadAllLines(Environment.CurrentDirectory + "\\selectedkeys.txt");
-                foreach (var line in lines)
+                lock (keysLock)
                 {
-                    if (Enum.TryParse(line, out KeyboardHook.VKeys key))
+                    foreach (var line in lines)
                     {
-                        selectedkeys.Add(key);
+                        if (Enum.TryParse(line, out KeyboardHook.VKeys key))
+                        {
+                            selectedkeys.Add(key);
+                        }
                     }
                 }
-                var selectedMicName = MicrophoneComboBox.SelectedItem as string;
+
+                var selectedMicName = MicrophoneComboBox?.SelectedItem as string;
 
                 if (!string.IsNullOrEmpty(selectedMicName))
                 {
-
                     var enumerator = new MMDeviceEnumerator();
                     var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
 
@@ -240,302 +264,596 @@ namespace Multron_Push_To_Talk
                         }
                     }
                 }
-             
-                var combo = string.Join(" + ", selectedkeys);
-                if(combo.Length > 3)
+
+                string combo;
+                lock (keysLock)
+                {
+                    combo = string.Join(" + ", selectedkeys);
+                }
+
+                if (combo.Length > 3)
                 {
                     selectedkeystring += " + " + combo;
-
-                  
                 }
-                
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
+                if (KeySelectionTextBox != null)
+                    KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                StopListen.Content = "Start Listening";
+                if (PushToTalkText != null)
+                    PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
+
+                if (StopListen != null)
+                    StopListen.Content = "Start Listening";
+
                 listening = 1;
-            
-
             }
-
-          
         }
+
         public void SaveSelectedKeys()
         {
-         
-            File.WriteAllText(Environment.CurrentDirectory + "\\device.txt", MicrophoneComboBox.SelectedIndex.ToString());
-            File.WriteAllLines(Environment.CurrentDirectory + "\\selectedkeys.txt", selectedkeys.Select(k => k.ToString()));
-            File.WriteAllLines(Environment.CurrentDirectory + "\\pressedmouses.txt", pressedmouses.Select(i => i.ToString()));
+            if (MicrophoneComboBox != null)
+            {
+                File.WriteAllText(Environment.CurrentDirectory + "\\device.txt", MicrophoneComboBox.SelectedIndex.ToString());
+            }
+
+            lock (keysLock)
+            {
+                File.WriteAllLines(Environment.CurrentDirectory + "\\selectedkeys.txt", selectedkeys.Select(k => k.ToString()));
+            }
+
+            lock (mouseLock)
+            {
+                File.WriteAllLines(Environment.CurrentDirectory + "\\pressedmouses.txt", pressedmouses.Select(i => i.ToString()));
+            }
         }
+
         private void keyboardHook_KeyDown(KeyboardHook.VKeys key)
         {
+            if (listening != 1)
+                return;
 
-            if (listening == 1 && selectedkeys.Count > 0)
+            lock (keysLock)
             {
-                if (selectedkeys.Contains(key))
+                if (selectedkeys.Count > 0 && selectedkeys.Contains(key))
                 {
                     pressedkeys.Add(key);
                 }
-                if (pressedkeys.SetEquals(selectedkeys))
+
+                bool keysMatch = pressedkeys.SetEquals(selectedkeys);
+
+                if (keysMatch)
                 {
-                    if (!isTalking && defaultmicdevice != null)
+                    bool shouldTalk = false;
+
+                    lock (talkingLock)
                     {
-                        
-                        isTalking = true;
-                        
-                        if (selectedmousehook == 0)
+                        if (!isTalking && defaultmicdevice != null && selectedmousehook == 0)
                         {
                             isTalking = true;
-                            PushToTalkText.Text = "Talking...";
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
-                            pressedkeys.Clear();
-
-
-
-
+                            shouldTalk = true;
                         }
+                    }
+
+                    if (shouldTalk)
+                    {
+                        try
+                        {
+                            this.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                if (PushToTalkText != null)
+                                    PushToTalkText.Text = "Talking...";
+                            }));
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error in keyDown UI update: {ex.Message}");
+                        }
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+
+                        pressedkeys.Clear();
                     }
                 }
             }
         }
+
         private void keyboardHook_KeyUp(KeyboardHook.VKeys key)
         {
             Thread t = new Thread(() =>
             {
-                if (isTalking)
+                bool shouldProcess = false;
+
+                lock (talkingLock)
+                {
+                    shouldProcess = isTalking;
+                }
+
+                if (shouldProcess)
                 {
                     int sleeptime = 0;
-                    this.Dispatcher.Invoke(() =>
+
+                    try
                     {
-                        sleeptime = int.Parse(MsSettingTextBox.Text);
-                    });
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            if (MsSettingTextBox != null && !string.IsNullOrEmpty(MsSettingTextBox.Text))
+                            {
+                                int.TryParse(MsSettingTextBox.Text, out sleeptime);
+                            }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error reading sleep time: {ex.Message}");
+                    }
+
                     Thread.Sleep(sleeptime);
-                    this.Dispatcher.Invoke(new Action(() =>
+
+                    try
                     {
-                     
-                        isTalking = false;
+                        this.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
 
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
 
-                        PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }));
-               
-                  
-
-
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error in keyUp: {ex.Message}");
+                    }
                 }
-               
             });
 
+            t.IsBackground = true;
             t.Start();
-         
-            
         }
-
-
-
-       
 
         private void keyboardHook_KeyDown2(KeyboardHook.VKeys key)
         {
-          
-       
-            if(listening == 0)
+            if (listening != 0)
+                return;
+
+            lock (keysLock)
             {
                 if (!selectedkeys.Contains(key))
                 {
                     selectedkeys.Add(key);
-                 
                 }
                 else
                 {
                     var combo = string.Join(" + ", selectedkeys);
-
                     selectedkeystring = combo;
-                    KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                    PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
-                    defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    try
+                    {
+                        this.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            if (KeySelectionTextBox != null)
+                                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = false;
+                        }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error in keyDown2: {ex.Message}");
+                    }
                 }
-              
-                
             }
-        }   
-        MouseHook mouseHook = new MouseHook();
-        int mouseload = 0;
-        int listening = 0;
-     
-         private void MouseHook_MouseButton4Down(MSLLHOOKSTRUCT mouseStruct)
+        }
+
+        private void MouseHook_MouseButton4Down(MSLLHOOKSTRUCT mouseStruct)
         {
-            clickedmouses.Add("MOUSE BUTTON4");
+            lock (mouseLock)
+            {
+                clickedmouses.Add("MOUSE BUTTON4");
+            }
+
             if (listening == 0)
+            {
+                selectedmousehook = 5;
+
+                lock (mouseLock)
                 {
-                    selectedmousehook = 5;
-               
-                if (!pressedmouses.Contains("MOUSE BUTTON4"))
+                    if (!pressedmouses.Contains("MOUSE BUTTON4"))
                     {
                         pressedmouses.Add("MOUSE BUTTON4");
                     }
-
-
-                    if (!selectedkeystring.Contains(" + MOUSE BUTTON4"))
-                    {
-                        selectedkeystring += " + MOUSE BUTTON4";
-                    }
-
-                    KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-
-                    PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                    defaultmicdevice.AudioEndpointVolume.Mute = true;
                 }
-             
-                if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && this.pressedkeys.SetEquals(this.selectedkeys))
+
+                if (!selectedkeystring.Contains(" + MOUSE BUTTON4"))
+                {
+                    selectedkeystring += " + MOUSE BUTTON4";
+                }
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (KeySelectionTextBox != null)
+                            KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+            bool shouldTalk = false;
+            lock (mouseLock)
+            {
+                lock (keysLock)
+                {
+                    shouldTalk = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                }
+            }
+
+            if (shouldTalk)
+            {
+                lock (talkingLock)
                 {
                     isTalking = true;
-                    PushToTalkText.Text = "Talking...";
-                    defaultmicdevice.AudioEndpointVolume.Mute = false;
-                    pressedkeys.Clear();
-
                 }
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = "Talking...";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
+                lock (keysLock)
+                {
+                    pressedkeys.Clear();
+                }
+            }
         }
+
         private void MouseHook_MouseButton4Up(MSLLHOOKSTRUCT mouseStruct)
         {
             Thread t = new Thread(() =>
             {
                 int sleeptime = 0;
-                this.Dispatcher.Invoke(() =>
+
+                try
                 {
-                    sleeptime = int.Parse(MsSettingTextBox.Text);
-                });
-                Thread.Sleep( sleeptime);
-                this.Dispatcher.Invoke(new Action(() =>
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        if (MsSettingTextBox != null && !string.IsNullOrEmpty(MsSettingTextBox.Text))
+                        {
+                            int.TryParse(MsSettingTextBox.Text, out sleeptime);
+                        }
+                    });
+                }
+                catch (Exception ex)
                 {
-                    
-                    if (listening == 0)
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
+                Thread.Sleep(sleeptime);
+
+                try
+                {
+                    this.Dispatcher.Invoke(new Action(() =>
                     {
+                        if (listening == 0)
+                        {
+                            if (KeySelectionTextBox != null)
+                                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
 
-                    }
+                        bool shouldUnmute = false;
+                        lock (mouseLock)
+                        {
+                            shouldUnmute = pressedmouses.SetEquals(clickedmouses) && listening == 1;
+                        }
 
-                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1)
-                    {
-                        isTalking = false;
+                        if (shouldUnmute)
+                        {
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }
-                    clickedmouses.Remove("MOUSE BUTTON4");
-                }));
-          
-              
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        lock (mouseLock)
+                        {
+                            clickedmouses.Remove("MOUSE BUTTON4");
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             });
 
+            t.IsBackground = true;
             t.Start();
-       
         }
+
         private void MouseHook_MouseButton3Down(MSLLHOOKSTRUCT mouseStruct)
         {
-            clickedmouses.Add("MOUSE BUTTON3");
+            lock (mouseLock)
+            {
+                if (!clickedmouses.Contains("MOUSE BUTTON3"))
+                {
+                    clickedmouses.Add("MOUSE BUTTON3");
+                }
+            }
+
             if (listening == 0)
             {
                 selectedmousehook = 4;
-              
-                if (!pressedmouses.Contains("MOUSE BUTTON3"))
+
+                lock (mouseLock)
                 {
-                    pressedmouses.Add("MOUSE BUTTON3");
+                    if (!pressedmouses.Contains("MOUSE BUTTON3"))
+                    {
+                        pressedmouses.Add("MOUSE BUTTON3");
+                    }
                 }
+
                 if (!selectedkeystring.Contains(" + MOUSE BUTTON3"))
                 {
-
                     selectedkeystring += " + MOUSE BUTTON3";
                 }
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-              
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (KeySelectionTextBox != null)
+                            KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             }
-            if(!clickedmouses.Contains("MOUSE BUTTON3"))
+
+            bool shouldTalk = false;
+            lock (mouseLock)
             {
-                clickedmouses.Add("MOUSE BUTTON3");
+                lock (keysLock)
+                {
+                    shouldTalk = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                }
             }
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+
+            if (shouldTalk)
             {
-                isTalking = true;
-                PushToTalkText.Text = "Talking...";
-                defaultmicdevice.AudioEndpointVolume.Mute = false;
+                lock (talkingLock)
+                {
+                    isTalking = true;
+                }
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = "Talking...";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
+
         private void MouseHook_MouseButton3Up(MSLLHOOKSTRUCT mouseStruct)
         {
             Thread t = new Thread(() =>
             {
                 int sleeptime = 0;
-                this.Dispatcher.Invoke(() =>
+
+                try
                 {
-                    sleeptime = int.Parse(MsSettingTextBox.Text);
-                });
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        if (MsSettingTextBox != null && !string.IsNullOrEmpty(MsSettingTextBox.Text))
+                        {
+                            int.TryParse(MsSettingTextBox.Text, out sleeptime);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
                 Thread.Sleep(sleeptime);
-                this.Dispatcher.Invoke(new Action(() =>
+
+                try
                 {
-                  
-                    if (listening == 0)
+                    this.Dispatcher.Invoke(new Action(() =>
                     {
-                        selectedmousehook = 4;
+                        if (listening == 0)
+                        {
+                            selectedmousehook = 4;
 
-                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+                            if (KeySelectionTextBox != null)
+                                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }
-                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
-                    {
-                        isTalking = false;
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }
-                    clickedmouses.Remove("MOUSE BUTTON3");
-                }));
-              
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        bool shouldUnmute = false;
+                        lock (mouseLock)
+                        {
+                            lock (keysLock)
+                            {
+                                shouldUnmute = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                            }
+                        }
+
+                        if (shouldUnmute)
+                        {
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
+
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        lock (mouseLock)
+                        {
+                            clickedmouses.Remove("MOUSE BUTTON3");
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             });
 
+            t.IsBackground = true;
             t.Start();
-          
         }
+
         private void MouseHook_RightButtonDown(MSLLHOOKSTRUCT mouseStruct)
         {
-            clickedmouses.Add("MOUSE RIGHT BUTTON");
+            lock (mouseLock)
+            {
+                clickedmouses.Add("MOUSE RIGHT BUTTON");
+            }
+
             if (listening == 0)
             {
                 selectedmousehook = 2;
-             
-                if (!pressedmouses.Contains("MOUSE RIGHT BUTTON"))
+
+                lock (mouseLock)
                 {
-                    pressedmouses.Add("MOUSE RIGHT BUTTON");
+                    if (!pressedmouses.Contains("MOUSE RIGHT BUTTON"))
+                    {
+                        pressedmouses.Add("MOUSE RIGHT BUTTON");
+                    }
                 }
+
                 if (!selectedkeystring.Contains(" + MOUSE RIGHT BUTTON"))
                 {
                     selectedkeystring += " + MOUSE RIGHT BUTTON";
                 }
-               
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-             
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (KeySelectionTextBox != null)
+                            KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             }
-          
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+
+            bool shouldTalk = false;
+            lock (mouseLock)
             {
-                isTalking = true;
-                PushToTalkText.Text = "Talking...";
-                defaultmicdevice.AudioEndpointVolume.Mute = false;
-                pressedkeys.Clear();
+                lock (keysLock)
+                {
+                    shouldTalk = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                }
+            }
+
+            if (shouldTalk)
+            {
+                lock (talkingLock)
+                {
+                    isTalking = true;
+                }
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = "Talking...";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
+                lock (keysLock)
+                {
+                    pressedkeys.Clear();
+                }
             }
         }
 
@@ -544,67 +862,161 @@ namespace Multron_Push_To_Talk
             Thread t = new Thread(() =>
             {
                 int sleeptime = 0;
-                this.Dispatcher.Invoke(() =>
+
+                try
                 {
-                    sleeptime = int.Parse(MsSettingTextBox.Text);
-                });
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        if (MsSettingTextBox != null && !string.IsNullOrEmpty(MsSettingTextBox.Text))
+                        {
+                            int.TryParse(MsSettingTextBox.Text, out sleeptime);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
                 Thread.Sleep(sleeptime);
-                this.Dispatcher.Invoke(new Action(() =>
+
+                try
                 {
-                   
-                    if (listening == 0)
+                    this.Dispatcher.Invoke(new Action(() =>
                     {
+                        if (listening == 0)
+                        {
+                            if (KeySelectionTextBox != null)
+                                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }
-                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
-                    {
-                        isTalking = false;
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + "  to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
 
-                    }
-                    clickedmouses.Remove("MOUSE RIGHT BUTTON");
-                }));
-             
+                        bool shouldUnmute = false;
+                        lock (mouseLock)
+                        {
+                            shouldUnmute = pressedmouses.SetEquals(clickedmouses) && listening == 1;
+                        }
+
+                        if (shouldUnmute)
+                        {
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
+
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + "  to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        lock (mouseLock)
+                        {
+                            clickedmouses.Remove("MOUSE RIGHT BUTTON");
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             });
 
+            t.IsBackground = true;
             t.Start();
-       
         }
 
         private void MouseHook_MiddleButtonDown(MSLLHOOKSTRUCT mouseStruct)
         {
-            clickedmouses.Add("MOUSE MIDDLE BUTTON");
+            lock (mouseLock)
+            {
+                clickedmouses.Add("MOUSE MIDDLE BUTTON");
+            }
+
             if (listening == 0)
             {
                 selectedmousehook = 3;
-           
-                if (!pressedmouses.Contains("MOUSE MIDDLE BUTTON"))
+
+                lock (mouseLock)
                 {
-                    pressedmouses.Add("MOUSE MIDDLE BUTTON");
+                    if (!pressedmouses.Contains("MOUSE MIDDLE BUTTON"))
+                    {
+                        pressedmouses.Add("MOUSE MIDDLE BUTTON");
+                    }
                 }
+
                 if (!selectedkeystring.Contains(" + MOUSE MIDDLE BUTTON"))
                 {
-
                     selectedkeystring += " + MOUSE MIDDLE BUTTON";
                 }
-                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                defaultmicdevice.AudioEndpointVolume.Mute = true;
-                isTalking = false;
 
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (KeySelectionTextBox != null)
+                            KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
+
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                        lock (talkingLock)
+                        {
+                            isTalking = false;
+                        }
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             }
-      
-            if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+
+            bool shouldTalk = false;
+            lock (mouseLock)
             {
-                isTalking = true;
-                PushToTalkText.Text = "Talking...";
-                defaultmicdevice.AudioEndpointVolume.Mute = false;
-                pressedkeys.Clear();
+                lock (keysLock)
+                {
+                    shouldTalk = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                }
+            }
+
+            if (shouldTalk)
+            {
+                lock (talkingLock)
+                {
+                    isTalking = true;
+                }
+
+                try
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = "Talking...";
+
+                        if (defaultmicdevice != null)
+                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
+
+                lock (keysLock)
+                {
+                    pressedkeys.Clear();
+                }
             }
         }
 
@@ -612,36 +1024,87 @@ namespace Multron_Push_To_Talk
         {
             Thread t = new Thread(() =>
             {
-                Thread.Sleep(int.Parse(MsSettingTextBox.Text));
-                this.Dispatcher.Invoke(new Action(() =>
+                int sleeptime = 0;
+
+                try
                 {
-                   
-                    if (listening == 0)
+                    this.Dispatcher.Invoke(() =>
                     {
-                        selectedmousehook = 3;
-                        KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        isTalking = false;
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
-                    }
+                        if (MsSettingTextBox != null && !string.IsNullOrEmpty(MsSettingTextBox.Text))
+                        {
+                            int.TryParse(MsSettingTextBox.Text, out sleeptime);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
 
-                    if (pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys))
+                Thread.Sleep(sleeptime);
+
+                try
+                {
+                    this.Dispatcher.Invoke(new Action(() =>
                     {
-                        isTalking = false;
+                        if (listening == 0)
+                        {
+                            selectedmousehook = 3;
 
-                        PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
-                        defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            if (KeySelectionTextBox != null)
+                                KeySelectionTextBox.Text = $"Selecteds: {selectedkeystring}";
 
-                    }
-                    clickedmouses.Remove("MOUSE MIDDLE BUTTON");
-                }));
-             
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        bool shouldUnmute = false;
+                        lock (mouseLock)
+                        {
+                            lock (keysLock)
+                            {
+                                shouldUnmute = pressedmouses.SetEquals(clickedmouses) && listening == 1 && pressedkeys.SetEquals(selectedkeys);
+                            }
+                        }
+
+                        if (shouldUnmute)
+                        {
+                            lock (talkingLock)
+                            {
+                                isTalking = false;
+                            }
+
+                            if (PushToTalkText != null)
+                                PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
+
+                            if (defaultmicdevice != null)
+                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                        }
+
+                        lock (mouseLock)
+                        {
+                            clickedmouses.Remove("MOUSE MIDDLE BUTTON");
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error: {ex.Message}");
+                }
             });
 
+            t.IsBackground = true;
             t.Start();
-       
         }
-       
+
 
         KeyboardHook keyboardHook_selection = new KeyboardHook();
         int load = 0;
