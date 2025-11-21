@@ -1,7 +1,7 @@
 <Window x:Class="Multron_Push_To_Talk.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Multron Push to Talk v1.3.1 beta"
+        Title="Multron Push to Talk v1.3.3 beta"
         Height="500" Width="800"
         Background="#1E1E2F"
         WindowStartupLocation="CenterScreen"
@@ -89,7 +89,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Multron Push to Talk v1.3.1 beta" 
+            <TextBlock Text="Multron Push to Talk v1.3.3 beta" 
                        VerticalAlignment="Center"
                        Margin="10,0,0,0"
                        Foreground="White"
