@@ -185,7 +185,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
 
                             keyboardHook.KeyDown += new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyDown);
                             keyboardHook.KeyUp += new KeyboardHook.KeyboardHookCallback(keyboardHook_KeyUp);
@@ -194,7 +194,8 @@ namespace Multron_Push_To_Talk
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"Refresh error: {ex.Message}");
+                        PushToTalkText.Text = $"Refresh error: {ex.Message}";
+                   
                     }
 
                     Thread.Sleep(100);
@@ -350,7 +351,7 @@ namespace Multron_Push_To_Talk
                         }
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                            SafeSetMute(false);
 
                         pressedkeys.Clear();
                     }
@@ -403,7 +404,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }));
                     }
                     catch (Exception ex)
@@ -444,7 +445,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold {selectedkeystring} to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = false;
+                                SafeSetMute(false);
                         }));
                     }
                     catch (Exception ex)
@@ -490,7 +491,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            SafeSetMute(true);
                     }));
                 }
                 catch (Exception ex)
@@ -523,7 +524,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = "Talking...";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                            SafeSetMute(false);
                     }));
                 }
                 catch (Exception ex)
@@ -574,7 +575,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         bool shouldUnmute = false;
@@ -594,7 +595,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         lock (mouseLock)
@@ -615,6 +616,8 @@ namespace Multron_Push_To_Talk
 
         private void MouseHook_MouseButton3Down(MSLLHOOKSTRUCT mouseStruct)
         {
+
+
             lock (mouseLock)
             {
                 if (!clickedmouses.Contains("MOUSE BUTTON3"))
@@ -651,7 +654,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            SafeSetMute(true);
                     }));
                 }
                 catch (Exception ex)
@@ -684,7 +687,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = "Talking...";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                            SafeSetMute(false);
                     }));
                 }
                 catch (Exception ex)
@@ -732,7 +735,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         bool shouldUnmute = false;
@@ -755,7 +758,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         lock (mouseLock)
@@ -809,7 +812,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            SafeSetMute(true);
                     }));
                 }
                 catch (Exception ex)
@@ -842,7 +845,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = "Talking...";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                            SafeSetMute(false);
                     }));
                 }
                 catch (Exception ex)
@@ -893,7 +896,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         bool shouldUnmute = false;
@@ -913,7 +916,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + "  to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         lock (mouseLock)
@@ -972,7 +975,7 @@ namespace Multron_Push_To_Talk
                         }
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = true;
+                            SafeSetMute(true);
                     }));
                 }
                 catch (Exception ex)
@@ -1005,7 +1008,7 @@ namespace Multron_Push_To_Talk
                             PushToTalkText.Text = "Talking...";
 
                         if (defaultmicdevice != null)
-                            defaultmicdevice.AudioEndpointVolume.Mute = false;
+                            SafeSetMute(false);
                     }));
                 }
                 catch (Exception ex)
@@ -1063,7 +1066,7 @@ namespace Multron_Push_To_Talk
                             }
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         bool shouldUnmute = false;
@@ -1086,7 +1089,7 @@ namespace Multron_Push_To_Talk
                                 PushToTalkText.Text = $"Press and Hold " + selectedkeystring + " to Talk";
 
                             if (defaultmicdevice != null)
-                                defaultmicdevice.AudioEndpointVolume.Mute = true;
+                                SafeSetMute(true);
                         }
 
                         lock (mouseLock)
@@ -1206,7 +1209,7 @@ namespace Multron_Push_To_Talk
             if (trayIcon != null)
                 trayIcon.Visible = false;
             if(defaultmicdevice != null)
-               defaultmicdevice.AudioEndpointVolume.Mute = false;
+               SafeSetMute(false);
           
             
             Environment.Exit(0);
@@ -1245,7 +1248,7 @@ namespace Multron_Push_To_Talk
                     }
                 }
             }
-            defaultmicdevice.AudioEndpointVolume.Mute = true;
+            SafeSetMute(true);
         }
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1272,7 +1275,7 @@ namespace Multron_Push_To_Talk
                 if (trayIcon != null)
                     trayIcon.Visible = false;
                 if (defaultmicdevice != null)
-                    defaultmicdevice.AudioEndpointVolume.Mute = false;
+                    SafeSetMute(false);
 
                 Environment.Exit(0);
                 
@@ -1296,7 +1299,53 @@ namespace Multron_Push_To_Talk
             
 
         }
+        private readonly object deviceLock = new object();
 
+    
+        private void SafeSetMute(bool muteState)
+        {
+            try
+            {
+                lock (deviceLock)
+                {
+                 
+
+
+                   if (defaultmicdevice == null || defaultmicdevice.State != DeviceState.Active)
+                   {
+                        PushToTalkText.Text = "Device is not active";
+                    
+                   } else
+                   {
+                        defaultmicdevice.AudioEndpointVolume.Mute = muteState;
+                   }
+
+                   
+                  
+                }
+            }
+            catch (COMException ex)
+            {
+            
+                PushToTalkText.Text = $"COM Exception while setting mute: {ex.Message} (0x{ex.HResult:X})";
+
+                if (ex.HResult == unchecked((int)0x88890004))
+                {
+                    defaultmicdevice = null;
+                    this.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (PushToTalkText != null)
+                            PushToTalkText.Text = "Microphone disconnected! Please reselect device.";
+                    }));
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                PushToTalkText.Text = $"Unexpected error while setting mute: {ex.Message}";
+                
+            }
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             pressedkeys.Clear();
